@@ -1,0 +1,36 @@
+<!-- /templates/view_tirepick_daily_results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tirepick Daily Analysis Results</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; background-color: #f4f4f9; }
+        .container { background: white; padding: 2em; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+        h1, h2 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1.5em; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007BFF; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        p { line-height: 1.6; }
+        a { display: inline-block; margin-top: 2em; color: #007BFF; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tirepick Daily Analysis Results</h1>
+        <h2>Analysis for Date: {{ analysis_date }}</h2>
+        
+        {% if table_html %}
+            <p>'타이어' 상품 타입에 대한 주문채널별 총 주문 건수와 총 주문수량입니다.</p>
+            {{ table_html|safe }}
+        {% else %}
+            <p><strong>분석 결과가 없습니다.</strong> 해당 날짜에 '타이어' 상품 주문 데이터가 없거나, 파일에 필요한 열이 없습니다.</p>
+        {% endif %}
+
+        <a href="{{ url_for('run_tirepick_daily') }}">Run another analysis</a>
+        <br>
+        <a href="{{ url_for('index') }}">Back to Program List</a>
+    </div>
+</body>
+</html>
