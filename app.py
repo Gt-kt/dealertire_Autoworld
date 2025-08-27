@@ -17,6 +17,7 @@ PROGRAMS = [
     {'id': 'crm', 'name': 'CRM'},
     {'id': 'b2c_weekly_p', 'name': 'B2C Weekly_P'},
     {'id': 'margin_by_tire', 'name': 'Margin_by_tire'},
+    {'id': 'quick_delivery', 'name': 'Quick Delivery'},
 ]
 
 PROGRAMS_DICT = {p['id']: p for p in PROGRAMS}
@@ -35,7 +36,7 @@ def run_program(program_name):
     
     # This check redirects any complex programs to their own dedicated route handler.
     # 'b2c_weekly_p' is simple, so it is NOT in this list.
-    if program_name in ['ibx_automation', 'crm', 'pl_categorizer', 'tirepick_daily']:
+    if program_name in ['ibx_automation', 'crm', 'pl_categorizer', 'tirepick_daily', 'quick_delivery']:
         return redirect(url_for(f'run_{program_name}'))
 
     if program_name not in PROGRAMS_DICT:
@@ -160,6 +161,30 @@ def run_pl_categorizer():
         except Exception as e:
             return render_template('run_pl_categorizer.html', error=str(e))
     return render_template('run_pl_categorizer.html', error=None)
+
+
+# --- Dedicated Handler for Quick Delivery ---
+@app.route('/run/quick_delivery', methods=['GET', 'POST'])
+def run_quick_delivery():
+    if request.method == 'POST':
+        try:
+            logistics_file = request.files.get('logistics_file')
+            admin_file = request.files.get('admin_file')
+            if not logistics_file or not admin_file:
+                raise ValueError("Both logistics and admin files are required.")
+
+            module = importlib.import_module("scripts.quick_delivery")
+            output_buffer = module.process_files(logistics_file, admin_file)
+
+            return send_file(
+                output_buffer,
+                as_attachment=True,
+                download_name='quick_delivery_summary.xlsx',
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+        except Exception as e:
+            return render_template('run_quick_delivery.html', error=str(e))
+    return render_template('run_quick_delivery.html', error=None)
 
 
 if __name__ == '__main__':
