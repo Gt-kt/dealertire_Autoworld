@@ -14,8 +14,17 @@ VALVE_BRANDS_B2B = ['밸브']
 BALANCE_WEIGHT_BRANDS_B2B = ['밸런스납']
 WASTE_TIRE_BRANDS_B2B = ['폐타이어 수거 이용권']
 B2B_INPUT_REQ_COLS = ['타이어가격', '수량', '상태', 'Brand']
-VALUE_COLS_TO_CHECK_AND_AGGREGATE_B2B = ['배송비', '수량', '상품쿠폰', '배송비쿠폰', '포인트', '상품별 영업할인', '정산금액']
-TIRE_OUTPUT_COLUMN_MAPPING_B2B = {'수량': 'E', '상품가': 'F', '배송비': 'G', '쿠폰': 'H', '포인트': 'I', '상품별 영업할인': 'J', '정산금액': 'M'}
+VALUE_COLS_TO_CHECK_AND_AGGREGATE_B2B = ['배송비', '수량', '상품쿠폰', '배송비쿠폰', '포인트', '상품별 영업할인', '직원할인', '정산금액']
+TIRE_OUTPUT_COLUMN_MAPPING_B2B = {
+    '수량': 'E',
+    '상품가': 'F',
+    '배송비': 'G',
+    '쿠폰': 'H',
+    '포인트': 'I',
+    '상품별 영업할인': 'J',
+    '직원할인': 'L',
+    '정산금액': 'M',
+}
 TIRE_OUTPUT_BRAND_COLUMN_B2B = 'D'
 TIRE_OUTPUT_START_ROW_B2B = 4
 TIRE_OUTPUT_END_ROW_B2B = 16
@@ -137,7 +146,7 @@ def aggregate_data(df_filtered, data_type):
                 df['쿠폰'] = df.get('상품쿠폰', 0) + df.get('배송비쿠폰', 0)
     
     # Final processing for both B2B and B2C
-    cols_to_divide = ['상품가', '배송비', '쿠폰', '포인트', '상품별 영업할인', '정산금액']
+    cols_to_divide = ['상품가', '배송비', '쿠폰', '포인트', '상품별 영업할인', '직원할인', '정산금액']
     for df in [tire_data_agg, other_category_summary]:
         if not df.empty:
             for col in cols_to_divide:
